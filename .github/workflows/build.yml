@@ -1,0 +1,62 @@
+name: Build WarriorLand Command Unlocks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle 9.2.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check PyYAML Pillow
+
+      - name: Generate assets and validate project
+        run: |
+          python scripts/generate_resource_pack_icons.py
+          python scripts/generate_command_icon_states.py
+          python scripts/generate_itemsadder_gui_background.py
+          python scripts/render_source_preview.py
+          python scripts/export_web_catalog.py
+          python scripts/validate_web_preview.py
+          python scripts/validate_project.py
+          python scripts/validate_server_only.py
+
+      - name: Build plugin and run JUnit tests
+        run: gradle clean test build --warning-mode all
+
+      - name: Package optional assets
+        run: |
+          (cd resource-pack && zip -qr ../WarriorLandCommandUnlocks-ResourcePack-1.15.8.zip .)
+          (cd itemsadder-addon && zip -qr ../WarriorLandCommandUnlocks-ItemsAdder-Addon-1.15.8.zip README.md contents)
+          (cd web && zip -qr ../WarriorLand-Web-1.15.8.zip .)
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: WarriorLand-1.15.8-build
+          path: |
+            build/libs/WarriorLandCommandUnlocks-1.15.8.jar
+            WarriorLandCommandUnlocks-ResourcePack-1.15.8.zip
+            WarriorLandCommandUnlocks-ItemsAdder-Addon-1.15.8.zip
+            WarriorLand-Web-1.15.8.zip
+          if-no-files-found: error
