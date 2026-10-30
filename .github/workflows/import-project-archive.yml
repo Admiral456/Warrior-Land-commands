@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - .import-trigger
+      - 'WarriorLand-Commands-1.15.8.zip'
+      - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
 permissions:
@@ -38,8 +39,8 @@ jobs:
           test -f "$SOURCE_DIR/web/index.html"
           test -f "$SOURCE_DIR/build.gradle.kts"
 
-          # Preserve the repository's MIT license and importer workflow.
-          rsync -a --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
+          # Keep the repository's existing root README, MIT license and workflow.
+          rsync -a --exclude='README.md' --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
 
           git add -A
