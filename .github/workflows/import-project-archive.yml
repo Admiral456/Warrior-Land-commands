@@ -1,0 +1,63 @@
+name: Import WarriorLand project archive
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - WarriorLandCommandUnlocks-1.15.8-web-frontend.zip
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-project:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Extract complete project
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="WarriorLandCommandUnlocks-1.15.8-web-frontend.zip"
+          if [[ ! -f "$ARCHIVE" ]]; then
+            echo "Project archive is not present yet. Upload $ARCHIVE to the repository root."
+            exit 0
+          fi
+
+          TEMP_DIR="$(mktemp -d)"
+          trap 'rm -rf "$TEMP_DIR"' EXIT
+          unzip -q "$ARCHIVE" -d "$TEMP_DIR"
+
+          SOURCE_DIR="$TEMP_DIR/WarriorLandCommandUnlocks-1.15.8"
+          if [[ ! -f "$SOURCE_DIR/web/index.html" ]]; then
+            echo "::error::The archive does not contain the expected web/index.html."
+            exit 1
+          fi
+          if [[ ! -f "$SOURCE_DIR/build.gradle.kts" ]]; then
+            echo "::error::The archive does not contain the expected Gradle project."
+            exit 1
+          fi
+
+          # Import the already-created project, including its existing web assets,
+          # generated command icons, resource pack and Paper plugin source.
+          # Keep the MIT LICENSE the repository owner created.
+          rsync -a --exclude='LICENSE' "$SOURCE_DIR/" ./
+          rm -f "$ARCHIVE"
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No project changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Import WarriorLand Command Unlocks 1.15.8 with web frontend"
+          git push origin HEAD:main
