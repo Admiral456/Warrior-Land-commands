@@ -1,13 +1,6 @@
 name: Import WarriorLand project archive
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - WarriorLand-Commands-1.15.8.zip
-      - .github/workflows/import-project-archive.yml
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 
 permissions:
   contents: write
@@ -16,47 +9,31 @@ jobs:
   import-project:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: main
-
-      - name: Extract complete project
+      - name: Extract project archive
         shell: bash
         run: |
           set -euo pipefail
           ARCHIVE="WarriorLand-Commands-1.15.8.zip"
           if [[ ! -f "$ARCHIVE" ]]; then
-            echo "::error::Project archive $ARCHIVE is not present in the repository root."
-            exit 1
+            echo "No import archive found; nothing to do."
+            exit 0
           fi
-
           TEMP_DIR="$(mktemp -d)"
           trap 'rm -rf "$TEMP_DIR"' EXIT
           unzip -q "$ARCHIVE" -d "$TEMP_DIR"
-
           SOURCE_DIR="$TEMP_DIR/WarriorLandCommandUnlocks-1.15.8"
-          if [[ ! -f "$SOURCE_DIR/web/index.html" ]]; then
-            echo "::error::The archive does not contain the expected web/index.html."
-            exit 1
-          fi
-          if [[ ! -f "$SOURCE_DIR/build.gradle.kts" ]]; then
-            echo "::error::The archive does not contain the expected Gradle project."
-            exit 1
-          fi
-
-          # Import project files while preserving the repo's LICENSE and the
-          # importer workflow. The build workflow is added separately via API
-          # because Actions' GITHUB_TOKEN cannot create new workflow files.
+          test -f "$SOURCE_DIR/web/index.html"
+          test -f "$SOURCE_DIR/build.gradle.kts"
           rsync -a --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
-
           git add -A
           if git diff --cached --quiet; then
             echo "No project changes to commit."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Import WarriorLand Command Unlocks 1.15.8 project"
