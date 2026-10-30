@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - WarriorLandCommandUnlocks-1.15.8-web-frontend.zip
+      - WarriorLand-Commands-1.15.8.zip
+      - .github/workflows/import-project-archive.yml
   workflow_dispatch:
 
 permissions:
@@ -13,7 +14,6 @@ permissions:
 
 jobs:
   import-project:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -25,10 +25,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ARCHIVE="WarriorLandCommandUnlocks-1.15.8-web-frontend.zip"
+          ARCHIVE="WarriorLand-Commands-1.15.8.zip"
           if [[ ! -f "$ARCHIVE" ]]; then
-            echo "Project archive is not present yet. Upload $ARCHIVE to the repository root."
-            exit 0
+            echo "::error::Project archive $ARCHIVE is not present in the repository root."
+            exit 1
           fi
 
           TEMP_DIR="$(mktemp -d)"
@@ -45,9 +45,8 @@ jobs:
             exit 1
           fi
 
-          # Import the already-created project, including its existing web assets,
-          # generated command icons, resource pack and Paper plugin source.
-          # Keep the MIT LICENSE the repository owner created.
+          # Import the project as-is: web UI, generated icons, resource pack,
+          # plugin source, docs and build scripts. Keep the repository's MIT LICENSE.
           rsync -a --exclude='LICENSE' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
 
@@ -59,5 +58,5 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Import WarriorLand Command Unlocks 1.15.8 with web frontend"
+          git commit -m "Import WarriorLand Command Unlocks 1.15.8 project"
           git push origin HEAD:main
