@@ -45,9 +45,10 @@ jobs:
             exit 1
           fi
 
-          # Import the project as-is: web UI, generated icons, resource pack,
-          # plugin source, docs and build scripts. Keep the repository's MIT LICENSE.
-          rsync -a --exclude='LICENSE' "$SOURCE_DIR/" ./
+          # Import project files while preserving the repo's LICENSE and the
+          # importer workflow. The build workflow is added separately via API
+          # because Actions' GITHUB_TOKEN cannot create new workflow files.
+          rsync -a --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
 
           git add -A
