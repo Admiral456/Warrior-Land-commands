@@ -1,6 +1,12 @@
 name: Import WarriorLand project archive
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .import-trigger
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -9,9 +15,11 @@ jobs:
   import-project:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
           ref: main
+
       - name: Extract project archive
         shell: bash
         run: |
@@ -21,19 +29,25 @@ jobs:
             echo "No import archive found; nothing to do."
             exit 0
           fi
+
           TEMP_DIR="$(mktemp -d)"
           trap 'rm -rf "$TEMP_DIR"' EXIT
           unzip -q "$ARCHIVE" -d "$TEMP_DIR"
           SOURCE_DIR="$TEMP_DIR/WarriorLandCommandUnlocks-1.15.8"
+
           test -f "$SOURCE_DIR/web/index.html"
           test -f "$SOURCE_DIR/build.gradle.kts"
+
+          # Preserve the repository's MIT license and importer workflow.
           rsync -a --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
+
           git add -A
           if git diff --cached --quiet; then
             echo "No project changes to commit."
             exit 0
           fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Import WarriorLand Command Unlocks 1.15.8 project"
