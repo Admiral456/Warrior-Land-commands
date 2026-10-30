@@ -39,8 +39,9 @@ jobs:
           test -f "$SOURCE_DIR/web/index.html"
           test -f "$SOURCE_DIR/build.gradle.kts"
 
-          # Keep the repository's existing root README, MIT license and workflow.
-          rsync -a --exclude='README.md' --exclude='LICENSE' --exclude='.github/workflows/' "$SOURCE_DIR/" ./
+          # Preserve only the repository-root README and MIT license.
+          # Keep the existing importer workflow; add project files but not nested GitHub workflows.
+          rsync -a --exclude='/README.md' --exclude='/LICENSE' --exclude='/.github/workflows/' "$SOURCE_DIR/" ./
           rm -f "$ARCHIVE"
 
           git add -A
