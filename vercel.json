@@ -1,10 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "mkdir -p public /tmp/wl-portal && unzip -oq WarriorLand-Commands-1.15.8.zip 'WarriorLandCommandUnlocks-1.15.8/web/*' -d /tmp/wl-portal && cp -a /tmp/wl-portal/WarriorLandCommandUnlocks-1.15.8/web/. public/",
+  "buildCommand": "bash build-portal.sh",
   "outputDirectory": "public",
-  "functions": {
-    "api/[...path].js": {
-      "maxDuration": 30
-    }
-  }
+  "functions": { "api/[...path].js": { "maxDuration": 30 } }
 }
