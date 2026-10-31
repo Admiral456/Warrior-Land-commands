@@ -13,7 +13,6 @@ function getAgent() {
     maxSockets: 32,
     ca,
     rejectUnauthorized: true,
-    checkServerIdentity: () => undefined,
     minVersion: 'TLSv1.2'
   });
   return cachedAgent;
