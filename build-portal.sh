@@ -115,7 +115,7 @@ render_code = """function render() {
   if (homeMode) {
     const count = state.catalog.unlocks.length;
     $('#homeCommandCount').textContent = String(count);
-    $('#homeTaskCount').textContent = String(countTasks());
+    $('#homeTaskCount').textContent = String(state.catalog.unlocks.reduce((total, item) => total + (item.tasks?.length || 0), 0));
     $('#homeIconCount').textContent = String(count * 6);
     return;
   }
