@@ -16,6 +16,7 @@ on:
       - 'latest-source-upgrade/default-skin.png.b64'
       - 'latest-source-upgrade/test-expectations.patch'
       - 'latest-source-upgrade/gateway.patch.gz.b64'
+      - 'latest-source-upgrade/gateway-validation.patch.gz.b64'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
@@ -136,31 +137,12 @@ jobs:
           PY
           grep -q 'warriorland-logo.svg' scripts/validate_web_preview.py
 
-      - name: Validate secure public HTTPS gateway policy
+      - name: Apply secure gateway validation expectations
         working-directory: ${{ env.SOURCE_DIR }}
         shell: bash
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path("scripts/validate_server_only.py")
-          source = path.read_text(encoding="utf-8")
-          old = '''check(web_config.get("enabled") is False and web_config.get("bind-host") == "127.0.0.1" and web_config.get("port") == 8765,
-      "web API must be disabled by default and bind only to loopback")'''
-          new = '''check(web_config.get("enabled") is True
-          and web_config.get("bind-host") == "0.0.0.0"
-          and 1024 <= int(web_config.get("port", 0)) <= 65535
-          and isinstance(web_config.get("proxy-secret"), str)
-          and len(web_config.get("proxy-secret", "")) == 0
-          and web_config.get("tls", {}).get("keystore") == "web-tls.p12",
-      "web API must use the fail-closed TLS listener and require the per-server proxy secret before serving requests")
-          check("HttpsServer" in web_api and "X-WL-Proxy-Key" in web_api
-          and "MessageDigest.isEqual" in web_api and "createTlsContext" in web_api,
-      "public API listener must use TLS and constant-time private proxy authentication")'''
-          if old not in source:
-              raise SystemExit("Original loopback-only web validation was not found exactly once.")
-          source = source.replace(old, new, 1)
-          path.write_text(source, encoding="utf-8")
-          PY
+          base64 -d "$GITHUB_WORKSPACE/latest-source-upgrade/gateway-validation.patch.gz.b64" | gunzip -c > "$RUNNER_TEMP/warriorland-gateway-validation.patch"
+          patch --batch --forward -p2 < "$RUNNER_TEMP/warriorland-gateway-validation.patch"
 
       - name: Validate current project
         working-directory: ${{ env.SOURCE_DIR }}
