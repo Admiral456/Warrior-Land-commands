@@ -249,7 +249,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WarriorLand-Player-Hub-Website
-          path: ${{ runner.temp }}/WarriorLand-Player-Hub-Website.zip
+          path: ${{ github.workspace }}/WarriorLand-Player-Hub-Website.zip
           if-no-files-found: error
           retention-days: 14
       - name: Upload Paper plugin JAR
