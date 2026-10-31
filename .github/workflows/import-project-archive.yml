@@ -1,56 +1,84 @@
-name: Import WarriorLand project archive
+name: Build WarriorLand Command Unlocks from source archive
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'WarriorLand-Commands-1.15.8.zip'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  import-project:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          ref: main
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      - name: Extract project archive
+      - name: Extract source archive
         shell: bash
         run: |
           set -euo pipefail
-          ARCHIVE="WarriorLand-Commands-1.15.8.zip"
-          if [[ ! -f "$ARCHIVE" ]]; then
-            echo "No import archive found; nothing to do."
-            exit 0
-          fi
-
-          TEMP_DIR="$(mktemp -d)"
-          trap 'rm -rf "$TEMP_DIR"' EXIT
-          unzip -q "$ARCHIVE" -d "$TEMP_DIR"
-          SOURCE_DIR="$TEMP_DIR/WarriorLandCommandUnlocks-1.15.8"
-
-          test -f "$SOURCE_DIR/web/index.html"
+          ARCHIVE="$GITHUB_WORKSPACE/WarriorLand-Commands-1.15.8.zip"
+          test -s "$ARCHIVE"
+          DEST="$RUNNER_TEMP/warriorland-source"
+          mkdir -p "$DEST"
+          unzip -q "$ARCHIVE" -d "$DEST"
+          SOURCE_DIR="$DEST/WarriorLandCommandUnlocks-1.15.8"
           test -f "$SOURCE_DIR/build.gradle.kts"
+          test -f "$SOURCE_DIR/web/index.html"
+          echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
 
-          # Preserve only the repository-root README and MIT license.
-          # Keep the existing importer workflow; add project files but not nested GitHub workflows.
-          rsync -a --exclude='/README.md' --exclude='/LICENSE' --exclude='/.github/workflows/' "$SOURCE_DIR/" ./
-          rm -f "$ARCHIVE"
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
 
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No project changes to commit."
-            exit 0
-          fi
+      - name: Set up Gradle 9.2.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Import WarriorLand Command Unlocks 1.15.8 project"
-          git push origin HEAD:main
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check PyYAML Pillow
+
+      - name: Validate project
+        working-directory: ${{ env.SOURCE_DIR }}
+        run: |
+          set -euo pipefail
+          python scripts/generate_resource_pack_icons.py
+          python scripts/generate_command_icon_states.py
+          python scripts/generate_itemsadder_gui_background.py
+          python scripts/render_source_preview.py
+          python scripts/export_web_catalog.py
+          python scripts/validate_web_preview.py
+          python scripts/validate_project.py
+          python scripts/validate_server_only.py
+
+      - name: Build plugin and run JUnit tests
+        working-directory: ${{ env.SOURCE_DIR }}
+        run: gradle clean test build --warning-mode all
+
+      - name: Verify plugin JAR
+        working-directory: ${{ env.SOURCE_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          JAR="build/libs/WarriorLandCommandUnlocks-1.15.8.jar"
+          test -s "$JAR"
+          jar tf "$JAR" | grep -x 'plugin.yml' >/dev/null
+          jar tf "$JAR" | grep -x 'config.yml' >/dev/null
+          jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/CommandUnlocksPlugin.class' >/dev/null
+
+      - name: Upload Paper plugin JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: WarriorLandCommandUnlocks-1.15.8-JAR
+          path: ${{ env.SOURCE_DIR }}/build/libs/WarriorLandCommandUnlocks-1.15.8.jar
+          if-no-files-found: error
+          retention-days: 14
