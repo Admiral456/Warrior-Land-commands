@@ -16,6 +16,7 @@ on:
       - 'latest-source-upgrade/default-skin.png.b64'
       - 'latest-source-upgrade/test-expectations.patch'
       - 'latest-source-upgrade/gateway.patch.gz.b64'
+      - 'latest-source-upgrade/web-audit-fixes.patch.gz.b64'
       - 'latest-source-upgrade/gateway-validation.patch.gz.b64'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
@@ -81,6 +82,14 @@ jobs:
           set -euo pipefail
           base64 -d "$GITHUB_WORKSPACE/latest-source-upgrade/gateway.patch.gz.b64" | gunzip -c > "$RUNNER_TEMP/warriorland-gateway.patch"
           patch --batch --forward -p2 < "$RUNNER_TEMP/warriorland-gateway.patch"
+
+      - name: Apply verified Player Hub interaction fixes
+        working-directory: ${{ env.SOURCE_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d "$GITHUB_WORKSPACE/latest-source-upgrade/web-audit-fixes.patch.gz.b64" | gunzip -c > "$RUNNER_TEMP/warriorland-web-audit-fixes.patch"
+          patch --batch --forward -p2 < "$RUNNER_TEMP/warriorland-web-audit-fixes.patch"
 
       - name: Ensure JUnit Platform launcher is available
         working-directory: ${{ env.SOURCE_DIR }}
