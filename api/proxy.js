@@ -91,7 +91,7 @@ module.exports = async function warriorLandApiProxy(req, res) {
     path: apiPath + (query ? '?' + query : ''),
     headers,
     agent,
-    timeout: 25000
+    timeout: 12000
   }, upstreamResponse => {
     for (const name of ['content-type', 'cache-control', 'set-cookie', 'x-content-type-options', 'referrer-policy', 'x-frame-options', 'strict-transport-security', 'content-security-policy', 'permissions-policy']) {
       if (upstreamResponse.headers[name] !== undefined) res.setHeader(name, upstreamResponse.headers[name]);
@@ -100,8 +100,11 @@ module.exports = async function warriorLandApiProxy(req, res) {
     upstreamResponse.pipe(res);
   });
 
+  const hardTimeout = setTimeout(() => upstream.destroy(new Error('Hostify API connection timeout')), 12000);
   upstream.on('timeout', () => upstream.destroy(new Error('Hostify API timeout')));
+  upstream.on('response', () => clearTimeout(hardTimeout));
   upstream.on('error', error => {
+    clearTimeout(hardTimeout);
     if (res.headersSent) res.destroy(error);
     else res.status(502).json({ ok: false, error: { code: 'BACKEND_UNAVAILABLE', message: 'WarriorLand server is currently unavailable.' } });
   });
