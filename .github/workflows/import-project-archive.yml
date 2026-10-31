@@ -15,6 +15,7 @@ on:
       - 'latest-source-upgrade/part07b.b64'
       - 'latest-source-upgrade/default-skin.png.b64'
       - 'latest-source-upgrade/test-expectations.patch'
+      - 'latest-source-upgrade/gateway.patch'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
@@ -71,6 +72,11 @@ jobs:
         working-directory: ${{ env.SOURCE_DIR }}
         shell: bash
         run: patch --batch --forward -p0 < "$GITHUB_WORKSPACE/latest-source-upgrade/test-expectations.patch"
+
+      - name: Apply HTTPS gateway changes to plugin source
+        working-directory: ${{ env.SOURCE_DIR }}
+        shell: bash
+        run: patch --batch --forward -p2 < "$GITHUB_WORKSPACE/latest-source-upgrade/gateway.patch"
 
       - name: Ensure JUnit Platform launcher is available
         working-directory: ${{ env.SOURCE_DIR }}
