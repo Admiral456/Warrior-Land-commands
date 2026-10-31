@@ -37,7 +37,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-          cache: gradle
 
       - name: Set up Gradle 9.2.1
         uses: gradle/actions/setup-gradle@v4
