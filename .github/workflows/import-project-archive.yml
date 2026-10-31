@@ -1,10 +1,19 @@
-name: Build WarriorLand Command Unlocks from source archive
+name: Build WarriorLand Command Unlocks from current source
 
 on:
   push:
     branches: [main]
     paths:
-      - 'WarriorLand-Commands-1.15.8.zip'
+      - 'latest-source-upgrade/part01.b64'
+      - 'latest-source-upgrade/part02.b64'
+      - 'latest-source-upgrade/part03a.b64'
+      - 'latest-source-upgrade/part03b.b64'
+      - 'latest-source-upgrade/part04.b64'
+      - 'latest-source-upgrade/part05.b64'
+      - 'latest-source-upgrade/part06.b64'
+      - 'latest-source-upgrade/part07a.b64'
+      - 'latest-source-upgrade/part07b.b64'
+      - 'latest-source-upgrade/default-skin.png.b64'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
@@ -18,7 +27,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Extract source archive
+      - name: Extract baseline source archive
         shell: bash
         run: |
           set -euo pipefail
@@ -31,6 +40,31 @@ jobs:
           test -f "$SOURCE_DIR/build.gradle.kts"
           test -f "$SOURCE_DIR/web/index.html"
           echo "SOURCE_DIR=$SOURCE_DIR" >> "$GITHUB_ENV"
+
+      - name: Apply current project source patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          PATCH_B64="$RUNNER_TEMP/warriorland-patch.b64"
+          PATCH_FILE="$RUNNER_TEMP/warriorland-upgrade.patch"
+          cat \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part01.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part02.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part03a.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part03b.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part04.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part05.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part06.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part07a.b64" \
+            "$GITHUB_WORKSPACE/latest-source-upgrade/part07b.b64" > "$PATCH_B64"
+          base64 -d "$PATCH_B64" | gunzip -c > "$PATCH_FILE"
+          cd "$SOURCE_DIR"
+          patch --batch --forward -p2 < "$PATCH_FILE"
+          mkdir -p web/assets/branding
+          base64 -d "$GITHUB_WORKSPACE/latest-source-upgrade/default-skin.png.b64" > web/assets/branding/warriorland-default-skin.png
+          test -s web/assets/branding/warriorland-default-skin.png
+          grep -q 'class WebApiServer' src/main/java/cz/warriorland/commandunlocks/WebApiServer.java
+          grep -q 'class WebAuthService' src/main/java/cz/warriorland/commandunlocks/WebAuthService.java
 
       - name: Set up Java 21
         uses: actions/setup-java@v5
@@ -46,7 +80,7 @@ jobs:
       - name: Install validation dependencies
         run: python -m pip install --disable-pip-version-check PyYAML Pillow
 
-      - name: Validate project
+      - name: Validate current project
         working-directory: ${{ env.SOURCE_DIR }}
         run: |
           set -euo pipefail
@@ -63,7 +97,7 @@ jobs:
         working-directory: ${{ env.SOURCE_DIR }}
         run: gradle clean test build --warning-mode all
 
-      - name: Verify plugin JAR
+      - name: Verify current plugin JAR
         working-directory: ${{ env.SOURCE_DIR }}
         shell: bash
         run: |
@@ -73,6 +107,9 @@ jobs:
           jar tf "$JAR" | grep -x 'plugin.yml' >/dev/null
           jar tf "$JAR" | grep -x 'config.yml' >/dev/null
           jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/CommandUnlocksPlugin.class' >/dev/null
+          jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/WebApiServer.class' >/dev/null
+          jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/WebAuthService.class' >/dev/null
+          jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/UpdateAnnouncementPolicy.class' >/dev/null
 
       - name: Upload Paper plugin JAR
         uses: actions/upload-artifact@v4
