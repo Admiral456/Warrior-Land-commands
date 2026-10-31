@@ -20,11 +20,10 @@ for part in part01.b64 part02.b64 part03a.b64 part03b.b64 part04.b64 part05.b64 
 done
 base64 -d "$PATCH_B64" | gunzip -c > "$TMP/source.patch"
 cd "$SRC"
-patch --batch --forward -p2 < "$TMP/source.patch"
-curl -fsSL "$BASE/latest-source-upgrade/test-expectations.patch" -o "$TMP/test-expectations.patch"
-patch --batch --forward -p0 < "$TMP/test-expectations.patch"
+git init --quiet
+git apply --whitespace=nowarn -p2 "$TMP/source.patch"
 curl -fsSL "$BASE/latest-source-upgrade/gateway.patch.gz.b64" | base64 -d | gunzip -c > "$TMP/gateway.patch"
-patch --batch --forward -p2 < "$TMP/gateway.patch"
+git apply --whitespace=nowarn -p2 "$TMP/gateway.patch"
 mkdir -p web/assets/branding
 curl -fsSL "$BASE/latest-source-upgrade/default-skin.png.b64" | base64 -d > web/assets/branding/warriorland-default-skin.png
 test -s web/assets/branding/warriorland-default-skin.png
