@@ -99,8 +99,8 @@ jobs:
           from pathlib import Path
           path = Path("web/app.js")
           source = path.read_text(encoding="utf-8")
-          needle = "  $('.toolbar').hidden = profileMode;\\n"
-          replacement = needle + "  $('.sort-box').hidden = tasksMode || profileMode;\\n"
+          needle = "  $('.toolbar').hidden = profileMode;\n"
+          replacement = needle + "  $('.sort-box').hidden = tasksMode || profileMode;\n"
           if replacement not in source:
               if needle not in source:
                   raise SystemExit("Could not find the view toolbar visibility control.")
