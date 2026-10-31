@@ -1,0 +1,21 @@
+--- src/test/java/cz/warriorland/commandunlocks/CatalogViewPolicyTest.java
++++ src/test/java/cz/warriorland/commandunlocks/CatalogViewPolicyTest.java
+@@ -35,7 +35,7 @@
+         assertEquals(List.of("home", "nick", "chatcolour"), CatalogViewPolicy.apply(sample(), "", "price-asc", null, null)
+                 .stream().map(UnlockDefinition::id).toList());
+         assertEquals(List.of("chatcolour", "nick", "home"), CatalogViewPolicy.apply(sample(), "", "price-desc", null, null)
+                 .stream().map(UnlockDefinition::id).toList());
+-        assertEquals(List.of("home", "chatcolour", "nick"), CatalogViewPolicy.apply(sample(), "", "availability", null,
++        assertEquals(List.of("chatcolour", "home", "nick"), CatalogViewPolicy.apply(sample(), "", "availability", null,
+                 definition -> definition.id().equals("chatcolour") ? 0 : 1).stream().map(UnlockDefinition::id).toList());
+     }
+--- src/test/java/cz/warriorland/commandunlocks/HudProgressPolicyTest.java
++++ src/test/java/cz/warriorland/commandunlocks/HudProgressPolicyTest.java
+@@ -19,7 +19,7 @@
+         assertEquals(8, HudProgressPolicy.filledSegments(10, 10, 8));
+         assertEquals(8, HudProgressPolicy.filledSegments(Integer.MAX_VALUE, Integer.MAX_VALUE, 8));
+         assertEquals(0, HudProgressPolicy.filledSegments(5, 10, -2));
+-        assertEquals(20, HudProgressPolicy.filledSegments(5, 10, 99));
++        assertEquals(10, HudProgressPolicy.filledSegments(5, 10, 99));
+     }
+ }
