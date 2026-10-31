@@ -24,6 +24,8 @@ git init --quiet
 git apply --whitespace=nowarn -p2 "$TMP/source.patch"
 curl -fsSL "$BASE/latest-source-upgrade/gateway.patch.gz.b64" | base64 -d | gunzip -c > "$TMP/gateway.patch"
 git apply --whitespace=nowarn -p2 "$TMP/gateway.patch"
+curl -fsSL "$BASE/latest-source-upgrade/web-audit-fixes.patch.gz.b64" | base64 -d | gunzip -c > "$TMP/web-audit-fixes.patch"
+git apply --whitespace=nowarn -p2 "$TMP/web-audit-fixes.patch"
 mkdir -p web/assets/branding
 curl -fsSL "$BASE/latest-source-upgrade/default-skin.png.b64" | base64 -d > web/assets/branding/warriorland-default-skin.png
 test -s web/assets/branding/warriorland-default-skin.png
