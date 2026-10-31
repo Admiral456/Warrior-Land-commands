@@ -79,7 +79,7 @@ jobs:
               needle = 'testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")'
               if needle not in source:
                   raise SystemExit("Could not find the JUnit Jupiter dependency declaration.")
-              source = source.replace(needle, needle + "\\n    " + launcher, 1)
+              source = source.replace(needle, needle + chr(10) + "    " + launcher, 1)
               path.write_text(source, encoding="utf-8")
           PY
           grep -q 'junit-platform-launcher:1.12.2' build.gradle.kts
@@ -108,15 +108,15 @@ jobs:
           source = path.read_text(encoding="utf-8")
           source = source.replace("assets/branding/warriorland-logo.webp", "assets/branding/warriorland-logo.svg")
           source = source.replace("'warriorland-logo.webp' in html", "'warriorland-logo.svg' in html")
-          source = source.replace(
-              '    logo = Image.open(WEB / "assets/branding/warriorland-logo.svg")\\n'
-              '    skin = Image.open(WEB / "assets/branding/warriorland-default-skin.png")\\n'
-              '    check(logo.width >= 800 and logo.height >= 250, f"server logo dimensions look wrong: {logo.size}")',
-              '    from xml.etree import ElementTree\\n'
-              '    logo = ElementTree.parse(WEB / "assets/branding/warriorland-logo.svg").getroot()\\n'
-              '    check(logo.attrib.get("viewBox") == "0 0 240 240", "server logo SVG has an unexpected viewBox")\\n'
+          start = source.index("    logo = Image.open(WEB /")
+          end = source.index("\\nexcept Exception as exc:", start)
+          replacement = "\\n".join([
+              '    from xml.etree import ElementTree',
+              '    logo = ElementTree.parse(WEB / "assets/branding/warriorland-logo.svg").getroot()',
+              '    check(logo.attrib.get("viewBox") == "0 0 240 240", "server logo SVG has an unexpected viewBox")',
               '    skin = Image.open(WEB / "assets/branding/warriorland-default-skin.png")'
-          )
+          ])
+          source = source[:start] + replacement + source[end:]
           path.write_text(source, encoding="utf-8")
           PY
           grep -q 'warriorland-logo.svg' scripts/validate_web_preview.py
