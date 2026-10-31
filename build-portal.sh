@@ -52,6 +52,7 @@ python3 -m venv "$TMP/venv"
 # Publish the cinematic homepage and the player's supplied WarriorLand artwork.
 mkdir -p web/assets/branding
 # Hero wordmark is supplied as a binary Vercel deployment file.
+cp "$ROOT/public/assets/branding/warriorland-hero-mark.webp" web/assets/branding/warriorland-hero-mark.webp
 curl -fsSL "$BASE/site-home/index.html" -o web/index.html
 curl -fsSL "$BASE/site-home/home.css" -o web/home.css
 test -s web/assets/branding/warriorland-hero-mark.webp
