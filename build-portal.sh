@@ -27,9 +27,10 @@ git apply --whitespace=nowarn -p2 "$TMP/gateway.patch"
 mkdir -p web/assets/branding
 curl -fsSL "$BASE/latest-source-upgrade/default-skin.png.b64" | base64 -d > web/assets/branding/warriorland-default-skin.png
 test -s web/assets/branding/warriorland-default-skin.png
-python3 -m pip install --disable-pip-version-check --quiet PyYAML Pillow
-python3 scripts/generate_resource_pack_icons.py
-python3 scripts/generate_command_icon_states.py
-python3 scripts/export_web_catalog.py
+python3 -m venv "$TMP/venv"
+"$TMP/venv/bin/python" -m pip install --disable-pip-version-check --quiet PyYAML Pillow
+"$TMP/venv/bin/python" scripts/generate_resource_pack_icons.py
+"$TMP/venv/bin/python" scripts/generate_command_icon_states.py
+"$TMP/venv/bin/python" scripts/export_web_catalog.py
 mkdir -p "$ROOT/public"
 cp -a web/. "$ROOT/public/"
