@@ -1,0 +1,131 @@
+/* WarriorLand home page — cinematic pixel-world theme */
+:root{
+  --wl-orange:#ff762e;--wl-orange-2:#ff3c35;--wl-gold:#ffc45d;
+  --wl-ink:#130d1e;--wl-panel:rgba(26,18,34,.77);--wl-line:rgba(255,255,255,.105);
+}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:#100b18;color:#f9f4ff}
+.world-backdrop{background-image:url('assets/backgrounds/warriorland-night.jpg');background-position:center 40%;background-size:cover;filter:saturate(1.08);opacity:.8}
+.backdrop-shade{background:
+ linear-gradient(180deg,rgba(11,7,19,.36) 0%,rgba(22,10,24,.20) 34%,rgba(10,7,18,.78) 78%,#100b18 100%),
+ linear-gradient(90deg,rgba(15,8,18,.48),rgba(15,8,18,.12) 48%,rgba(15,8,18,.42))}
+.app-shell{max-width:1720px;padding:14px 32px 20px}
+.panel{background:linear-gradient(135deg,rgba(31,23,39,.83),rgba(18,14,31,.91));border:1px solid var(--wl-line);box-shadow:0 14px 50px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.045);backdrop-filter:blur(18px)}
+.topbar{min-height:82px;padding:9px 20px;gap:20px;border:1px solid rgba(255,255,255,.10);border-radius:16px;background:rgba(22,16,30,.68);box-shadow:0 12px 32px #09050d66;overflow:visible}
+.topbar:after{display:none}
+.brand-home{flex:0 0 170px;width:170px;height:60px;padding:0;border:0;background:transparent;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:flex-start}
+.brand-home img{width:150px;height:58px;object-fit:contain;filter:drop-shadow(0 3px 10px #ff532e55)}
+.primary-nav{display:flex;justify-content:center;align-items:center;gap:7px;flex:1;min-width:0;z-index:2}
+.nav-link{border:1px solid transparent;background:transparent;color:#d6cedd;padding:12px 15px;border-radius:10px;display:flex;align-items:center;gap:9px;font:600 13px Inter,sans-serif;white-space:nowrap;cursor:pointer;transition:.18s ease}
+.nav-link span{font-size:17px;color:#c7bfd2}
+.nav-link:hover{background:rgba(255,255,255,.07);color:white}
+.nav-link.active{background:linear-gradient(135deg,#f05b28,#a92e32);border-color:#ff8a4c;color:#fff;box-shadow:0 7px 22px #e84c2e55}
+.nav-link.active span{color:#ffe8cb}
+.account-pill{flex:0 0 224px;display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(10,8,17,.62);color:white;text-align:left;cursor:pointer;z-index:2}
+.account-pill:hover{border-color:#ff9a61;background:rgba(39,23,30,.9)}
+.account-avatar{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(145deg,#70452d,#291c24);font-size:21px}
+.account-copy{display:grid;gap:3px;flex:1}
+.account-copy b{font-size:12px;font-weight:800}
+.account-copy small{font-size:10px;color:#bdb3c1}
+.account-arrow{font-size:25px;color:#c4bac7;line-height:1}
+.mobile-menu{display:none}
+.home-view{margin-top:0}
+.home-hero{min-height:430px;position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:50px 18px 24px}
+.home-hero:before{content:"";position:absolute;inset:0;z-index:-2;background:
+ linear-gradient(180deg,rgba(15,8,19,.12),rgba(20,9,20,.05) 50%,rgba(10,7,17,.52)),
+ url('assets/backgrounds/warriorland-night.jpg') center 41%/cover no-repeat;filter:saturate(1.15)}
+.home-hero:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(15,8,19,.44),transparent 35%,transparent 65%,rgba(15,8,19,.38)),linear-gradient(180deg,transparent 63%,rgba(15,9,18,.72))}
+.hero-atmosphere{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 66%,rgba(255,91,39,.26),transparent 40%),radial-gradient(ellipse at 50% 100%,rgba(109,34,62,.28),transparent 45%)}
+.hero-copy{width:min(800px,100%);display:flex;align-items:center;flex-direction:column}
+.hero-eyebrow{font:700 10px Rajdhani,sans-serif;letter-spacing:3px;color:#ffe1c5;text-shadow:0 2px 12px #12070c}
+.hero-eyebrow i{display:inline-block;width:4px;height:4px;margin:0 9px 2px;border-radius:50%;background:#ffab5e;box-shadow:0 0 9px #ff9a51}
+.hero-wordmark{width:min(590px,83vw);max-height:255px;object-fit:contain;margin:7px auto 1px;filter:drop-shadow(0 14px 23px rgba(0,0,0,.54));}
+.hero-subtitle{margin:7px 0 24px;color:#f3e3df;font:700 12px Rajdhani,sans-serif;letter-spacing:5px;text-shadow:0 2px 12px #170b10}
+.hero-subtitle i{font-style:normal;color:#ff9c57;padding:0 4px}
+.hero-actions{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.hero-button{min-width:270px;height:67px;padding:0 28px;display:flex;align-items:center;justify-content:center;gap:13px;border-radius:18px;color:#fff;font:700 16px Inter,sans-serif;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}
+.hero-button:hover{transform:translateY(-3px)}
+.hero-button.primary{border:1px solid #ffb16b;background:linear-gradient(115deg,#ff7637,#bc332e);box-shadow:0 0 0 2px #9a362f77,0 9px 28px #ee552e77,inset 0 1px #ffd39a88}
+.hero-button.primary:hover{box-shadow:0 0 0 2px #bd4d40,0 12px 34px #ee552e99}
+.hero-button.secondary{border:1px solid rgba(224,212,244,.35);background:linear-gradient(120deg,rgba(34,29,48,.96),rgba(20,17,33,.95));box-shadow:0 9px 24px #08050b80,inset 0 1px rgba(255,255,255,.08)}
+.hero-button.secondary:hover{border-color:#ffc16f}
+.button-icon{font-size:21px;color:#ffdda7}
+.button-arrow{font-size:23px;margin-left:5px}
+.hero-bottom-glow{position:absolute;bottom:0;left:10%;right:10%;height:50px;background:radial-gradient(ellipse,rgba(255,91,37,.22),transparent 68%);pointer-events:none}
+.home-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 29px}
+.home-stat{min-height:90px;display:flex;align-items:center;gap:16px;padding:14px 20px;border:1px solid rgba(255,255,255,.105);border-radius:15px;background:linear-gradient(115deg,rgba(32,23,36,.84),rgba(22,18,33,.87));box-shadow:0 10px 28px #08040b66,inset 0 1px rgba(255,255,255,.05);backdrop-filter:blur(14px);text-align:left}
+button.home-stat{cursor:pointer;color:inherit;width:100%;font-family:inherit}
+button.home-stat:hover{border-color:#f29a61;transform:translateY(-2px)}
+.home-stat-icon{width:54px;height:54px;flex:none;border-radius:13px;display:grid;place-items:center;font:800 27px Rajdhani,sans-serif;box-shadow:0 8px 23px #0004,inset 0 1px #ffffff35}
+.home-stat-icon.purple{color:#e7b5ff;background:linear-gradient(145deg,#52206d,#a044d1)}
+.home-stat-icon.blue{color:#d7f4ff;background:linear-gradient(145deg,#20506a,#55a8c7)}
+.home-stat-icon.gold{color:#ffe5a2;background:linear-gradient(145deg,#82501b,#e99b2c)}
+.home-stat-icon.community{color:#e2d9ff;background:linear-gradient(145deg,#315b92,#8797d7)}
+.home-stat-copy{display:grid;gap:3px;min-width:0}
+.home-stat-copy strong{font:800 27px Rajdhani,sans-serif;line-height:1;color:#fff}
+.home-stat-copy small{font:500 12px Inter,sans-serif;color:#c5bacb}
+.stat-arrow{margin-left:auto;font-size:22px;color:#c4b5cc}
+.home-categories{padding:0 0 8px}
+.home-section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 5px 14px}
+.home-section-heading h2{margin:0;display:flex;align-items:center;gap:13px;font:800 21px Inter,sans-serif;color:#fff;text-shadow:0 2px 12px #100810}
+.heading-star{font-size:30px;color:#ff6339;text-shadow:0 2px 0 #a52b2b,0 0 16px #ff5b37}
+.text-link{border:0;background:transparent;color:#ff783e;font:700 14px Inter,sans-serif;cursor:pointer}
+.text-link:hover{color:#ffc078}
+.text-link span{font-size:20px;margin-left:8px}
+.home-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.home-category-card{position:relative;isolation:isolate;min-height:150px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:0;border:1px solid rgba(255,255,255,.13);border-radius:15px;background:#21162a;text-align:left;color:#fff;cursor:pointer;box-shadow:0 10px 26px #07040a77;transition:transform .2s,border-color .2s,box-shadow .2s}
+.home-category-card:hover{transform:translateY(-4px);border-color:rgba(255,179,119,.72);box-shadow:0 15px 32px #07040aaa,0 0 22px #ff7b3922}
+.category-scene{position:absolute;inset:0;z-index:-2;background-image:url('assets/backgrounds/warriorland-night.jpg');background-size:cover;background-position:center 44%;transition:transform .4s}
+.home-category-card:hover .category-scene{transform:scale(1.06)}
+.home-category-card:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,6,20,.08),rgba(12,6,20,.12) 25%,rgba(14,9,20,.94) 100%)}
+.home-category-card.teleport:before{background:linear-gradient(90deg,rgba(37,10,70,.25),rgba(14,8,26,.12)),linear-gradient(180deg,transparent 15%,rgba(15,7,27,.94))}
+.home-category-card.residence .category-scene{background-position:22% 44%;filter:saturate(1.2)}
+.home-category-card.economy .category-scene{background-position:74% 50%;filter:sepia(.23) saturate(1.35)}
+.home-category-card.utility .category-scene{background-position:100% 38%;filter:hue-rotate(18deg) saturate(1.1)}
+.scene-symbol{position:absolute;top:13px;left:15px;width:46px;height:46px;border:1px solid #ffffff44;border-radius:12px;display:grid;place-items:center;background:rgba(16,9,24,.56);backdrop-filter:blur(8px);font:800 25px Rajdhani;color:#fff;box-shadow:0 6px 20px #0005}
+.teleport .scene-symbol{color:#dfadff;background:rgba(73,24,111,.56)}
+.residence .scene-symbol{color:#9affb7;background:rgba(24,92,53,.5)}
+.economy .scene-symbol{color:#ffd070;background:rgba(122,75,19,.58)}
+.utility .scene-symbol{color:#95eaff;background:rgba(18,92,119,.56)}
+.home-category-info{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:13px 16px;background:rgba(17,12,24,.61);backdrop-filter:blur(9px);border-top:1px solid #ffffff18}
+.home-category-info b{font:800 14px Inter,sans-serif}
+.home-category-info small{font:500 10px Inter,sans-serif;color:#c7bdce}
+.home-category-info i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:22px;color:#c4b6c9}
+.home-note{display:flex;align-items:center;gap:9px;margin:18px 4px 0;color:#bdb2c3;font:500 11px Inter,sans-serif}
+.note-dot{width:7px;height:7px;border-radius:50%;background:#f7a45b;box-shadow:0 0 11px #ff8d43}
+.site-footer{color:#8a7c90;padding:18px 4px 0}
+.workspace{margin-top:18px}
+.demo-banner{margin-top:17px}
+.site-footer strong{color:#ff9b5b}
+@media(max-width:1150px){
+ .app-shell{padding:12px 18px 18px}.topbar{gap:9px;padding:8px 12px}.brand-home{flex-basis:132px;width:132px}.brand-home img{width:125px}.primary-nav{gap:1px}.nav-link{padding:10px 8px;font-size:11px;gap:6px}.account-pill{flex-basis:184px}
+ .home-hero{min-height:390px}.home-category-grid{gap:12px}
+}
+@media(max-width:850px){
+ .topbar{min-height:72px;flex-wrap:wrap}.brand-home{flex-basis:120px;width:120px;height:49px}.brand-home img{width:115px;height:45px}
+ .primary-nav{order:3;flex:1 0 100%;justify-content:space-between;overflow:auto;padding:3px 0 2px}
+ .nav-link{font-size:10px;padding:8px 9px}.nav-link span{font-size:14px}
+ .account-pill{margin-left:auto;flex-basis:180px}.home-hero{min-height:360px}
+ .home-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:540px){
+ .app-shell{padding:8px 9px 15px}.topbar{gap:6px;padding:7px 9px;border-radius:12px}
+ .brand-home{flex:0 0 98px;width:98px;height:43px}.brand-home img{width:96px;height:42px}
+ .account-pill{flex:0 0 auto;padding:6px 8px;gap:6px}.account-avatar{width:29px;height:29px;font-size:16px}.account-copy b{font-size:10px}.account-copy small{font-size:8px}.account-arrow{font-size:19px}
+ .primary-nav{gap:3px;justify-content:flex-start}.nav-link{font-size:9px;padding:8px 9px;gap:4px}.nav-link span{font-size:13px}
+ .home-hero{min-height:310px;padding:32px 8px 20px}.hero-eyebrow{font-size:8px;letter-spacing:2px}
+ .hero-wordmark{width:min(460px,94vw);max-height:175px;margin-top:9px}
+ .hero-subtitle{font-size:9px;letter-spacing:2px;margin:7px 0 17px}
+ .hero-actions{gap:8px;width:100%}.hero-button{min-width:0;flex:1;height:52px;padding:0 9px;gap:7px;border-radius:12px;font-size:11px}
+ .button-icon{font-size:16px}.button-arrow{font-size:17px;margin-left:0}
+ .home-stats{gap:8px;margin-bottom:22px}.home-stat{min-height:70px;padding:9px;gap:9px;border-radius:11px}
+ .home-stat-icon{width:38px;height:38px;border-radius:9px;font-size:19px}.home-stat-copy strong{font-size:21px}.home-stat-copy small{font-size:9px;line-height:1.3}
+ .home-section-heading{margin:0 2px 10px;align-items:flex-start}.home-section-heading h2{font-size:15px;gap:7px}.heading-star{font-size:22px}
+ .text-link{font-size:10px}.text-link span{font-size:14px;margin-left:3px}
+ .home-category-grid{gap:8px}.home-category-card{min-height:120px;border-radius:11px}
+ .scene-symbol{width:33px;height:33px;top:9px;left:9px;font-size:19px;border-radius:9px}
+ .home-category-info{padding:9px 10px;gap:3px 7px}.home-category-info b{font-size:11px}.home-category-info small{font-size:8px}.home-category-info i{font-size:17px}
+ .home-note{font-size:9px;line-height:1.5;align-items:flex-start}
+}
