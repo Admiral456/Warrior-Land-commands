@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#180d25">
+  <meta name="description" content="WarriorLand — hráčský portál, katalog příkazů, úkoly, statistiky a Minecraft komunita.">
+  <title>WarriorLand · Player Hub</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <div class="world-backdrop" aria-hidden="true"></div>
+  <div class="backdrop-shade" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="topbar panel">
+      <button class="brand-home" data-nav="home" aria-label="WarriorLand – úvodní stránka">
+        <img src="assets/branding/warriorland-hero-mark.webp" alt="WarriorLand">
+      </button>
+      <nav class="primary-nav" aria-label="Hlavní navigace">
+        <button class="nav-link active" data-nav="home"><span>⌂</span> Domů</button>
+        <button class="nav-link" data-nav="all"><span>▤</span> Katalog</button>
+        <button class="nav-link" data-nav="mine"><span>⬡</span> Moje příkazy</button>
+        <button class="nav-link" data-nav="tasks"><span>✓</span> Úkoly</button>
+        <button class="nav-link" data-nav="ranking"><span>▥</span> Žebříček</button>
+        <button class="nav-link" data-nav="help"><span>?</span> Nápověda</button>
+      </nav>
+      <button class="account-pill" data-nav="profile">
+        <span class="account-avatar">✦</span>
+        <span class="account-copy"><b>Připojit účet</b><small>Propojit s Minecraftem</small></span>
+        <span class="account-arrow">›</span>
+      </button>
+      <button class="mobile-menu" id="mobileMenu" aria-label="Otevřít kategorie">☰</button>
+      <span id="balance" hidden>250</span>
+      <span class="wallet-demo" hidden>DEMO</span>
+    </header>
+
+    <section class="home-view" id="homeView">
+      <section class="home-hero" aria-labelledby="homeTitle">
+        <div class="hero-atmosphere" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <span class="hero-eyebrow">WARRIORLAND NETWORK <i></i> YOUR WORLD · YOUR RULES</span>
+          <h1 id="homeTitle" class="sr-only">WarriorLand</h1>
+          <img class="hero-wordmark" src="assets/branding/warriorland-hero-mark.webp" alt="WarriorLand">
+          <p class="hero-subtitle">PŘÍKAZY <i>·</i> ÚKOLY <i>·</i> ODMĚNY <i>·</i> KOMUNITA</p>
+          <div class="hero-actions">
+            <button class="hero-button primary" data-home-action="all"><span class="button-icon">▤</span> Prozkoumat katalog <span class="button-arrow">→</span></button>
+            <button class="hero-button secondary" data-home-action="tasks"><span class="button-icon">🏆</span> Plnit úkoly <span class="button-arrow">→</span></button>
+          </div>
+        </div>
+        <div class="hero-bottom-glow" aria-hidden="true"></div>
+      </section>
+
+      <section class="home-stats" aria-label="Přehled WarriorLand">
+        <article class="home-stat">
+          <span class="home-stat-icon purple">›_</span>
+          <span class="home-stat-copy"><strong id="homeCommandCount">75</strong><small>Příkazů v katalogu</small></span>
+        </article>
+        <article class="home-stat">
+          <span class="home-stat-icon blue">✓</span>
+          <span class="home-stat-copy"><strong id="homeTaskCount">77</strong><small>Úkolů k dokončení</small></span>
+        </article>
+        <article class="home-stat">
+          <span class="home-stat-icon gold">▤</span>
+          <span class="home-stat-copy"><strong id="homeIconCount">450</strong><small>Unikátních ikon</small></span>
+        </article>
+        <button class="home-stat community-stat" data-nav="profile">
+          <span class="home-stat-icon community">♟</span>
+          <span class="home-stat-copy"><strong>Připoj se</strong><small>Staň se součástí komunity</small></span>
+          <span class="stat-arrow">→</span>
+        </button>
+      </section>
+
+      <section class="home-categories" aria-labelledby="categoriesTitle">
+        <div class="home-section-heading">
+          <h2 id="categoriesTitle"><span class="heading-star">★</span> Oblíbené kategorie</h2>
+          <button class="text-link" data-home-action="all">Zobrazit celý katalog <span>→</span></button>
+        </div>
+        <div class="home-category-grid">
+          <button class="home-category-card teleport" data-home-category="teleport">
+            <span class="category-scene"><span class="scene-symbol">✧</span></span>
+            <span class="home-category-info"><b>Teleportace</b><small>Rychlé cestování po světě</small><i>→</i></span>
+          </button>
+          <button class="home-category-card residence" data-home-category="residence">
+            <span class="category-scene"><span class="scene-symbol">⌂</span></span>
+            <span class="home-category-info"><b>Residence</b><small>Ochrana a správa pozemků</small><i>→</i></span>
+          </button>
+          <button class="home-category-card economy" data-home-category="economy">
+            <span class="category-scene"><span class="scene-symbol">◉</span></span>
+            <span class="home-category-info"><b>Ekonomika</b><small>Obchodování a peníze</small><i>→</i></span>
+          </button>
+          <button class="home-category-card utility" data-home-category="utility">
+            <span class="category-scene"><span class="scene-symbol">⚒</span></span>
+            <span class="home-category-info"><b>Utility</b><small>Užitečné nástroje a funkce</small><i>→</i></span>
+          </button>
+        </div>
+      </section>
+      <div class="home-note"><span class="note-dot"></span><span>Veřejný katalog je dostupný všem. Pro osobní postup, zůstatek a nákupy propojíš svůj Minecraft účet.</span></div>
+    </section>
+
+    <div class="demo-banner" role="status" hidden>
+      <span class="demo-dot"></span>
+      <span><b>Ukázkový režim</b> · katalog používá data z projektu; hráčský profil a nákupy se aktivují po připojení Paper API.</span>
+      <span class="demo-banner-tag" id="connectionLabel">NEPŘIPOJENO</span>
+    </div>
+
+    <section class="workspace" hidden>
+      <aside class="sidebar panel" id="sidebar">
+        <div class="side-heading"><span>KATALOG</span><span class="side-heading-line"></span></div>
+        <nav id="categories" aria-label="Kategorie příkazů"></nav>
+        <div class="side-art">
+          <div class="side-art-glow"></div>
+          <div class="side-art-copy"><b>WARRIORLAND</b><span>DISCOVER YOUR POWER</span></div>
+          <div class="side-art-foot"><span>✦</span> PŘIPRAV SE NA NOVÉ MOŽNOSTI <span>✦</span></div>
+        </div>
+        <div class="sidebar-foot"><span class="online-indicator" id="serverIndicator"></span> SERVER STATUS <b id="serverStatus">OVĚŘUJI…</b></div>
+      </aside>
+
+      <section class="catalog panel">
+        <div class="catalog-heading">
+          <div><div class="section-kicker">COMMAND LIBRARY</div><h2 id="viewTitle">Všechny příkazy</h2><p id="viewSubtitle">Prozkoumej katalog a vyber si, co chceš odemknout.</p></div>
+          <div class="catalog-total"><strong id="catalogCount">75</strong><span>PŘÍKAZŮ</span></div>
+        </div>
+        <div class="view-tabs" role="tablist" aria-label="Pohled katalogu">
+          <button class="view-tab active" data-view="all" role="tab" aria-selected="true"><span>▦</span> Katalog</button>
+          <button class="view-tab" data-view="mine" role="tab" aria-selected="false"><span>◈</span> Moje příkazy</button>
+          <button class="view-tab" data-view="tasks" role="tab" aria-selected="false"><span>✧</span> Úkoly</button>
+          <button class="view-tab" data-view="profile" role="tab" aria-selected="false"><span>♙</span> Profil hráče</button>
+        </div>
+        <div class="toolbar">
+          <label class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Hledat příkaz, alias nebo popis…" autocomplete="off"><kbd>⌘ K</kbd></label>
+          <label class="sort-box"><span>Řadit</span><select id="sort" aria-label="Řazení"><option value="default">Výchozí</option><option value="price-asc">Cena: nejnižší</option><option value="price-desc">Cena: nejvyšší</option><option value="name">Název A–Z</option></select><span class="select-chevron">⌄</span></label>
+        </div>
+        <div class="filter-row" id="filterRow">
+          <span class="filter-label">ZOBRAZIT:</span>
+          <button class="filter-chip active" data-filter="all">Vše</button>
+          <button class="filter-chip" data-filter="owned">Odemčené</button>
+          <button class="filter-chip" data-filter="ready">Připravené</button>
+          <button class="filter-chip" data-filter="insufficient">Málo bodů</button>
+          <button class="filter-chip" data-filter="locked">Zamčené</button>
+          <button class="filter-chip" data-filter="unavailable">Nedostupné</button>
+          <span class="result-count" id="resultCount">75 výsledků</span>
+        </div>
+        <div id="cards" class="cards" aria-live="polite"></div>
+        <div id="taskList" class="task-list" hidden aria-live="polite"></div>
+        <section id="profilePage" class="profile-page" hidden aria-label="Profil Minecraft hráče"></section>
+        <footer class="pagination">
+          <button id="prev" class="page-arrow" aria-label="Předchozí stránka">‹</button>
+          <span id="page-label">STRÁNKA 1 / 7</span>
+          <button id="next" class="page-arrow" aria-label="Další stránka">›</button>
+          <span class="page-hint">12 položek na stránku</span>
+        </footer>
+      </section>
+      <aside id="detail" class="detail panel" aria-live="polite">
+        <div class="detail-empty"><span>✧</span><b>Vyber příkaz</b><small>Detail příkazu, cena a požadované úkoly se zobrazí zde.</small></div>
+      </aside>
+    </section>
+
+    <footer class="site-footer"><span>© WARRIORLAND NETWORK</span><span>POWERED BY THE COMMUNITY</span><span>PLAYER HUB <b>·</b> <strong id="footerStatus">DEMO</strong></span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>
