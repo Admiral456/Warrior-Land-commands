@@ -18,6 +18,8 @@ on:
       - 'latest-source-upgrade/gateway.patch.gz.b64'
       - 'latest-source-upgrade/web-audit-fixes.patch.gz.b64'
       - 'latest-source-upgrade/gateway-validation.patch.gz.b64'
+      - 'site-home/index.html'
+      - 'site-home/home.css'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
@@ -201,6 +203,55 @@ jobs:
           jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/WebAuthService.class' >/dev/null
           jar tf "$JAR" | grep -x 'cz/warriorland/commandunlocks/UpdateAnnouncementPolicy.class' >/dev/null
 
+      - name: Assemble complete static Player Hub website
+        working-directory: ${{ env.SOURCE_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p web/assets/branding
+          cp "$GITHUB_WORKSPACE/site-home/index.html" web/index.html
+          cp "$GITHUB_WORKSPACE/site-home/home.css" web/home.css
+          # Use the exact homepage application script and wordmark from the live production site.
+          curl -fsSL --retry 3 https://warriorland-portal.vercel.app/app.js -o web/app.js
+          curl -fsSL --retry 3 https://warriorland-portal.vercel.app/assets/branding/warriorland-hero-mark.webp -o web/assets/branding/warriorland-hero-mark.webp
+          test -s web/index.html
+          test -s web/home.css
+          test -s web/app.js
+          test -s web/styles.css
+          test -s web/data/catalog.json
+          test -s web/assets/branding/warriorland-hero-mark.webp
+          mkdir -p "$RUNNER_TEMP/WarriorLand-Player-Hub"
+          cp -a web/. "$RUNNER_TEMP/WarriorLand-Player-Hub/"
+          cat > "$RUNNER_TEMP/WarriorLand-Player-Hub/README.txt" <<'EOF'
+          WARRIORLAND PLAYER HUB — COMPLETE WEBSITE
+          ==========================================
+          This archive contains the complete static website: homepage, catalogue,
+          styles, JavaScript, generated catalogue data, icons, background images
+          and the WarriorLand wordmark.
+
+          Preview locally:
+            Open index.html using a local HTTP server (not file://).
+            For example: python -m http.server 8000
+
+          Hosting:
+            Upload the contents of this folder to a static HTTPS host.
+
+          Important:
+            Player linking, live profile, live balances, and purchases require
+            the separately hosted WarriorLand API proxy and a running Minecraft
+            plugin. A static copy alone cannot provide live server functions.
+          EOF
+          cd "$RUNNER_TEMP"
+          zip -qr "$GITHUB_WORKSPACE/WarriorLand-Player-Hub-Website.zip" WarriorLand-Player-Hub
+          unzip -t "$GITHUB_WORKSPACE/WarriorLand-Player-Hub-Website.zip"
+
+      - name: Upload complete static Player Hub website
+        uses: actions/upload-artifact@v4
+        with:
+          name: WarriorLand-Player-Hub-Website
+          path: ${{ runner.temp }}/WarriorLand-Player-Hub-Website.zip
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload Paper plugin JAR
         uses: actions/upload-artifact@v4
         with:
