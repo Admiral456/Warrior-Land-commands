@@ -109,14 +109,14 @@ jobs:
           source = source.replace("assets/branding/warriorland-logo.webp", "assets/branding/warriorland-logo.svg")
           source = source.replace("'warriorland-logo.webp' in html", "'warriorland-logo.svg' in html")
           start = source.index("    logo = Image.open(WEB /")
-          end = source.index("\\nexcept Exception as exc:", start)
-          replacement = "\\n".join([
+          end = source.index("except Exception as exc:", start)
+          replacement = chr(10).join([
               '    from xml.etree import ElementTree',
               '    logo = ElementTree.parse(WEB / "assets/branding/warriorland-logo.svg").getroot()',
               '    check(logo.attrib.get("viewBox") == "0 0 240 240", "server logo SVG has an unexpected viewBox")',
               '    skin = Image.open(WEB / "assets/branding/warriorland-default-skin.png")'
           ])
-          source = source[:start] + replacement + source[end:]
+          source = source[:start] + replacement + chr(10) + source[end:]
           path.write_text(source, encoding="utf-8")
           PY
           grep -q 'warriorland-logo.svg' scripts/validate_web_preview.py
