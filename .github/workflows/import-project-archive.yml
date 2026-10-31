@@ -15,7 +15,7 @@ on:
       - 'latest-source-upgrade/part07b.b64'
       - 'latest-source-upgrade/default-skin.png.b64'
       - 'latest-source-upgrade/test-expectations.patch'
-      - 'latest-source-upgrade/gateway.patch'
+      - 'latest-source-upgrade/gateway.patch.gz.b64'
       - '.github/workflows/import-project-archive.yml'
   workflow_dispatch:
 
@@ -76,7 +76,10 @@ jobs:
       - name: Apply HTTPS gateway changes to plugin source
         working-directory: ${{ env.SOURCE_DIR }}
         shell: bash
-        run: patch --batch --forward -p2 < "$GITHUB_WORKSPACE/latest-source-upgrade/gateway.patch"
+        run: |
+          set -euo pipefail
+          base64 -d "$GITHUB_WORKSPACE/latest-source-upgrade/gateway.patch.gz.b64" | gunzip -c > "$RUNNER_TEMP/warriorland-gateway.patch"
+          patch --batch --forward -p2 < "$RUNNER_TEMP/warriorland-gateway.patch"
 
       - name: Ensure JUnit Platform launcher is available
         working-directory: ${{ env.SOURCE_DIR }}
