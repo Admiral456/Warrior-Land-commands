@@ -80,6 +80,29 @@ jobs:
       - name: Install validation dependencies
         run: python -m pip install --disable-pip-version-check PyYAML Pillow
 
+      - name: Align web branding validation with SVG logo
+        working-directory: ${{ env.SOURCE_DIR }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/validate_web_preview.py")
+          source = path.read_text(encoding="utf-8")
+          source = source.replace("assets/branding/warriorland-logo.webp", "assets/branding/warriorland-logo.svg")
+          source = source.replace("'warriorland-logo.webp' in html", "'warriorland-logo.svg' in html")
+          source = source.replace(
+              '    logo = Image.open(WEB / "assets/branding/warriorland-logo.svg")\n'
+              '    skin = Image.open(WEB / "assets/branding/warriorland-default-skin.png")\n'
+              '    check(logo.width >= 800 and logo.height >= 250, f"server logo dimensions look wrong: {logo.size}")',
+              '    from xml.etree import ElementTree\n'
+              '    logo = ElementTree.parse(WEB / "assets/branding/warriorland-logo.svg").getroot()\n'
+              '    check(logo.attrib.get("viewBox") == "0 0 240 240", "server logo SVG has an unexpected viewBox")\n'
+              '    skin = Image.open(WEB / "assets/branding/warriorland-default-skin.png")'
+          )
+          path.write_text(source, encoding="utf-8")
+          PY
+          grep -q 'warriorland-logo.svg' scripts/validate_web_preview.py
+
       - name: Validate current project
         working-directory: ${{ env.SOURCE_DIR }}
         run: |
